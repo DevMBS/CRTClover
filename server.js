@@ -9,7 +9,7 @@ const navigate_global = new ROSLIB.Service({ ros: ros, name : '/navigate_global'
 const request = require("request");
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
-const url = 'https://abbe-95-73-121-127.eu.ngrok.io/';
+const url = 'https://rescueclover.vercel.app/';
 //get login and password of user
 const logindata = fs.readFileSync('login.txt', 'utf8').split(';');
 //connection request
