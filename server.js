@@ -20,22 +20,7 @@ socket.on('connect', function(){
     socket.on('connectres'+uid, (user)=> {
         if(user!= null){
             console.log('Connected to server');
-            //check emergency and disarm drone
-            getTelemetry.callService(new ROSLIB.ServiceRequest({ frame_id: '' }), function(telem) {
-                let checkEmergencyInterval = setInterval(checkEmergency, 100);
-                let x = telem.vx;
-                let y = telem.vy;
-                let z = telem.vz;
-                function checkEmergency(){
-                    getTelemetry.callService(new ROSLIB.ServiceRequest({ frame_id: '' }), function(telemetry) {
-                        if(Math.abs(telemetry.vx - x) > 1 || Math.abs(telemetry.vy - y) > 1 || Math.abs(telemetry.vz - z) > 1){
-                            exec("sudo systemctl restart clover", (error, stdout, stderr) => {});
-                        }
-                    });
-                }
-            });
-
-            let telemetrystreaminterval = setInterval(telemetryStream, 1000);
+            let telemetrystreaminterval = setInterval(telemetryStream, 100);
             function telemetryStream(){
                 try {
                     getTelemetry.callService(new ROSLIB.ServiceRequest({ frame_id: '' }), function(telemetry) {
@@ -57,7 +42,7 @@ socket.on('connect', function(){
                 }
                 else if(command.command == 'reboot'){
                     try {
-                        exec("python emergency.py", (error, stdout, stderr) => {});
+                        exec("python3 emergency.py", (error, stdout, stderr) => {});
                     } 
                     catch (error) {}
                     setTimeout(function(){exec("sudo systemctl restart clover", (error, stdout, stderr) => {});}, 200);
@@ -66,7 +51,7 @@ socket.on('connect', function(){
                     if (fs.existsSync('./photo.png')){
                         fs.unlinkSync(__dirname+'/photo.png');
                     }
-                    exec("python photo.py", (error, stdout, stderr) => {
+                    exec("python3 photo.py", (error, stdout, stderr) => {
                         if(!error){
                             let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
                             socket.emit('photo', {uid: uid, photo: pfc});
