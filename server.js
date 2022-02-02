@@ -46,19 +46,31 @@ socket.on('connect', function(){
                     try {
                         exec("python3 disarm.py", (error, stdout, stderr) => {});
                     } 
-                    catch (error) {}
+                    catch (error) {
+                        exec("python disarm.py", (error, stdout, stderr) => {});
+                    }
                 }
                 else if(command.command == 'photo'){
                     if (fs.existsSync('./photo.png')){
                         fs.unlinkSync(__dirname+'/photo.png');
                     }
-                    exec("python3 photo.py", (error, stdout, stderr) => {
-                        if(!error){
-                            let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
-                            socket.emit('photo', {uid: uid, photo: pfc});
-                            fs.unlinkSync(__dirname+'/photo.png');
-                        }
-                    });
+                    try {
+                        exec("python3 photo.py", (error, stdout, stderr) => {
+                            if(!error){
+                                let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
+                                socket.emit('photo', {uid: uid, photo: pfc});
+                                fs.unlinkSync(__dirname+'/photo.png');
+                            }
+                        });
+                    } catch (error) {
+                        exec("python photo.py", (error, stdout, stderr) => {
+                            if(!error){
+                                let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
+                                socket.emit('photo', {uid: uid, photo: pfc});
+                                fs.unlinkSync(__dirname+'/photo.png');
+                            }
+                        });
+                    }
                 }
                 else if(command.command == 'rth'){
                     getTelemetry.callService(new ROSLIB.ServiceRequest({ frame_id: '' }), function(telemetry) {
