@@ -1,0 +1,15 @@
+[Unit]
+    Description=RescueClover server
+
+[Service]
+    ExecStart=/bin/sh /var/www/CRTClover/service.sh
+    Type=idle
+    KillMode=process
+
+    SyslogIdentifier=rescueclover
+    SyslogFacility=daemon
+
+    Restart=on-failure
+
+[Install]
+    WantedBy=multi-user.target
