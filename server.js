@@ -44,7 +44,7 @@ socket.on('connect', function(){
                 }
                 else if(command.command == 'disarm'){
                     try {
-                        exec("sudo python3 disarm.py", (error, stdout, stderr) => {});
+                        exec("python3 disarm.py", (error, stdout, stderr) => {});
                     } 
                     catch (error) {}
                 }
@@ -52,7 +52,7 @@ socket.on('connect', function(){
                     if (fs.existsSync('./photo.png')){
                         fs.unlinkSync(__dirname+'/photo.png');
                     }
-                    exec("sudo python3 photo.py", (error, stdout, stderr) => {
+                    exec("python3 photo.py", (error, stdout, stderr) => {
                         if(!error){
                             let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
                             socket.emit('photo', {uid: uid, photo: pfc});
