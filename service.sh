@@ -1,1 +1,1 @@
-sudo node server.js
+sudo node /var/www/CRTClover/server.js
