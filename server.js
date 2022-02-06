@@ -43,13 +43,13 @@ socket.on('connect', function(){
                     navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 0.1, frame_id: 'body' }), function(result) {});
                 }
                 else if(command.command == 'disarm'){
-                    exec("python3 disarm.py", (error, stdout, stderr) => {});
+                    exec("python3 /var/www/CRTClover/disarm.py", (error, stdout, stderr) => {});
                 }
                 else if(command.command == 'photo'){
                     if (fs.existsSync('./photo.png')){
                         fs.unlinkSync(__dirname+'/photo.png');
                     }
-                    exec("python3 photo.py", (error, stdout, stderr) => {
+                    exec("python3 /var/www/CRTClover/photo.py", (error, stdout, stderr) => {
                         if(!error){
                             let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
                             socket.emit('photo', {uid: uid, photo: pfc});
@@ -86,6 +86,15 @@ socket.on('connect', function(){
                         }
                     });
                 }
+            });
+
+            socket.on('mission', (mission) => {
+                fs.writeFileSync('/var/www/CRTClover/mission.py', mission);
+                try {
+                    exec("python3 /var/www/CRTClover/mission.py", (error, stdout, stderr) => {
+                        socket.emit('missionOut', {out: stdout, error: error, uid: uid});
+                    });
+                } catch (error) {}
             });
         }
         else{
