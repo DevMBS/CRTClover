@@ -37,10 +37,11 @@ socket.on('connect', function(){
 
             socket.on('command', (command)=>{
                 if(command.command == 'land'){
+                    navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 0.1, frame_id: 'body', auto_arm: true }), function(result) {});
                     land.callService(new ROSLIB.ServiceRequest({}), function(result) {});
                 }
                 else if(command.command == 'hover'){
-                    navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 0.1, frame_id: 'body' }), function(result) {});
+                    navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 0.1, frame_id: 'body', auto_arm: true }), function(result) {});
                 }
                 else if(command.command == 'disarm'){
                     exec("python3 /var/www/CRTClover/disarm.py", (error, stdout, stderr) => {});
