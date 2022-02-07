@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import cv2
 import rospy
 rospy.init_node('computer_vision_sample')
