@@ -51,9 +51,9 @@ socket.on('connect', function(){
                     }
                     exec("python3 /var/www/CRTClover/photo.py", (error, stdout, stderr) => {
                         if(!error){
-                            let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
+                            let pfc = new Buffer(fs.readFileSync('/var/www/CRTClover/photo.png')).toString('base64');
                             socket.emit('photo', {uid: uid, photo: pfc});
-                            fs.unlinkSync(__dirname+'/photo.png');
+                            fs.unlinkSync('/var/www/CRTClover/photo.png');
                         }
                     });
                 }
