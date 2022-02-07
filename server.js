@@ -9,8 +9,8 @@ const land = new ROSLIB.Service({ ros: ros, name : '/land', serviceType : 'clove
 const navigate_global = new ROSLIB.Service({ ros: ros, name : '/navigate_global', serviceType : 'clover/NavigateGlobal' });
 const fs = require('fs');
 const {io} = require('socket.io-client')
-const socket = io.connect('https://296a-94-29-126-254.eu.ngrok.io');
-const url = 'https://296a-94-29-126-254.eu.ngrok.io/';
+const socket = io.connect('https://48c5-94-29-126-254.eu.ngrok.io');
+const url = 'https://48c5-94-29-126-254.eu.ngrok.io/';
 //get login and password of user
 //const uid = fs.readFileSync('login.txt', 'utf8');  -------- PRODUCTION
 const uid = 'ry9WLV5Rz81Al7wcRusTy12vlHAk9VrX'; //   -------- TESTING
