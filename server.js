@@ -46,7 +46,7 @@ socket.on('connect', function(){
                     exec("python3 /var/www/CRTClover/disarm.py", (error, stdout, stderr) => {});
                 }
                 else if(command.command == 'photo'){
-                    if (fs.existsSync('var/www/CRTClover/photo.png')){
+                    if (fs.existsSync('/var/www/CRTClover/photo.png')){
                         fs.unlinkSync('/var/www/CRTClover/photo.png');
                     }
                     exec("python3 /var/www/CRTClover/photo.py", (error, stdout, stderr) => {
