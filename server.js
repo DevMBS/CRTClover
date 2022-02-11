@@ -12,8 +12,8 @@ const {io} = require('socket.io-client')
 const socket = io.connect('https://48c5-94-29-124-254.eu.ngrok.io');
 const url = 'https://48c5-94-29-124-254.eu.ngrok.io/';
 //get login and password of user
-//const uid = fs.readFileSync('login.txt', 'utf8');  -------- PRODUCTION
-const uid = 'ry9WLV5Rz81Al7wcRusTy12vlHAk9VrX'; //   -------- TESTING
+const uid = fs.readFileSync('/var/www/CRTCloverlogin.txt', 'utf8').split('\n')[0];
+
 if (fs.existsSync('/var/www/CRTClover/takeoff.txt')){
     fs.unlinkSync('/var/www/CRTClover/takeoff.txt');
 }
@@ -41,7 +41,7 @@ socket.on('connect', function(){
                         restartCounter++;
                     }
                     else{
-                        exec("sudo pm2 restart /var/www/CRTClover/server.js -i max", (error, stdout, stderr) => {});
+                        exec("pm2 restart /var/www/CRTClover/server.js", (error, stdout, stderr) => {});
                         restartCounter = 0;
                     }
                 }
