@@ -12,7 +12,7 @@ const {io} = require('socket.io-client')
 const socket = io.connect('https://48c5-94-29-124-254.eu.ngrok.io');
 const url = 'https://48c5-94-29-124-254.eu.ngrok.io/';
 //get login and password of user
-const uid = fs.readFileSync('/var/www/CRTCloverlogin.txt', 'utf8').split('\n')[0];
+const uid = fs.readFileSync('/var/www/CRTClover/login.txt', 'utf8').split('\n')[0];
 
 if (fs.existsSync('/var/www/CRTClover/takeoff.txt')){
     fs.unlinkSync('/var/www/CRTClover/takeoff.txt');
@@ -25,6 +25,7 @@ socket.on('connect', function(){
         if(user!= null){
             console.log('Connected to server');
             let telemetrystreaminterval = setInterval(telemetryStream, 42);
+            let restartCounter = 0;
             function telemetryStream(){
                 if(getTelemetry.ros.isConnected){
                     getTelemetry.callService(new ROSLIB.ServiceRequest({ frame_id: '' }), function(telemetry) {
