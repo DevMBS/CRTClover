@@ -42,7 +42,7 @@ socket.on('connect', function(){
                         restartCounter++;
                     }
                     else{
-                        exec("pm2 restart /var/www/CRTClover/server.js", (error, stdout, stderr) => {});
+                        exec("pm2 restart /var/www/CRTClover/server.js");
                         restartCounter = 0;
                     }
                 }
@@ -51,14 +51,14 @@ socket.on('connect', function(){
             socket.on('command', (command)=>{
                 if(command.command == 'land'){
                     navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 0.1, frame_id: 'body', auto_arm: true}), function(result) {
-                        land.callService(new ROSLIB.ServiceRequest({}), function(result) {});
+                        land.callService(new ROSLIB.ServiceRequest({}));
                     });
                 }
                 else if(command.command == 'hover'){
-                    navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 0.1, frame_id: 'body', auto_arm: true}), function(result) {});
+                    navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 0.1, frame_id: 'body', auto_arm: true}));
                 }
                 else if(command.command == 'disarm'){
-                    exec("python3 /var/www/CRTClover/mavros.py disarm", (error, stdout, stderr) => {});
+                    exec("python3 /var/www/CRTClover/mavros.py disarm");
                 }
                 else if(command.command == 'photo'){
                     if (fs.existsSync(__dirname+'/photo.png')){
@@ -79,19 +79,19 @@ socket.on('connect', function(){
                         }
                         else{
                             function rth(lat, lon){
-                                navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: data.alt-telemetry.z, yaw: 0.0, yaw_rate: 0.0, speed: 0.5, frame_id: 'body', auto_arm: true }), function(result) {});
+                                navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: data.alt-telemetry.z, yaw: 0.0, yaw_rate: 0.0, speed: 0.5, frame_id: 'body', auto_arm: true }));
                                 setTimeout(returnTO, ((data.alt-telemetry.z)/0.5)*1000+4000);
                                 function returnTO(){
-                                    navigate_global.callService(new ROSLIB.ServiceRequest({ lat: lat, lon: lon, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: data.speed, frame_id: 'body', auto_arm: false }), function(result) {});
+                                    navigate_global.callService(new ROSLIB.ServiceRequest({ lat: lat, lon: lon, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: data.speed, frame_id: 'body', auto_arm: false }));
                                     let x = lat - telemetry.lat;
                                     let y = lon - telemetry.lon;
                                     setTimeout(action, (Math.sqrt(x*x+y*y)/data.speed)*1000+20000);
                                     function action(){
                                         if(data.action == 'hover'){
-                                            navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 1, frame_id: 'body'}), function(result) {});
+                                            navigate.callService(new ROSLIB.ServiceRequest({ x: 0.0, y: 0.0, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: 1, frame_id: 'body'}));
                                         }
                                         else if(data.action == 'land'){
-                                            land.callService(new ROSLIB.ServiceRequest({}), function(result) {});
+                                            land.callService(new ROSLIB.ServiceRequest({}));
                                         }
                                     }
                                 }
