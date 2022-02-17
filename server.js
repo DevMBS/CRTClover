@@ -42,7 +42,7 @@ socket.on('connect', function(){
                         restartCounter++;
                     }
                     else{
-                        exec("pm2 restart /var/www/CRTClover/server.js");
+                        exec("sudo pm2 restart /var/www/CRTClover/server.js");
                         restartCounter = 0;
                     }
                 }
