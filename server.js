@@ -113,7 +113,7 @@ socket.on('connect', function(){
                 fs.writeFileSync('/var/www/CRTClover/mission.py', mission);
                 try {
                     exec("python3 /var/www/CRTClover/mission.py", (error, stdout, stderr) => {
-                        socket.emit('missionOut', {out: stdout, error: error, uid: uid});
+                        socket.emit('missionOut', {out: stdout, error: stderr, uid: uid});
                     });
                 } catch (error) {}
             });
