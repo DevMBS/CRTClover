@@ -61,7 +61,7 @@ socket.on('connect', function(){
                         restartCounter++;
                     }
                     else{
-                        exec("sudo pm2 restart /var/www/CRTClover/server.js");
+                        exec("pm2 restart /var/www/CRTClover/server.js");
                         restartCounter = 0;
                     }
                 }
@@ -81,7 +81,11 @@ socket.on('connect', function(){
                 }
                 //disarm request: disarm drone
                 else if(command.command == 'disarm'){
-                    exec("python3 /var/www/CRTClover/mavros.py disarm");
+                    exec("python3 /var/www/CRTClover/mavros.py disarm", (error, stdout, stderr) => {
+                        if(stderr.indexOf('ModuleNotFoundError') >= 0){
+                            exec("python /var/www/CRTClover/mavros.py disarm");
+                        }
+                    });
                 }
                 //photo request
                 else if(command.command == 'photo'){
@@ -98,6 +102,18 @@ socket.on('connect', function(){
                             socket.emit('photo', {uid: uid, photo: pfc});
                             //delete image from the drone
                             fs.unlinkSync(__dirname+'/photo.png');
+                        }
+                        if(stderr.indexOf('ModuleNotFoundError') >= 0){
+                            exec("python /var/www/CRTClover/mavros.py photo", (error, stdout, stderr) => {
+                                if(!error){
+                                    //encode image to the base64 encoding
+                                    let pfc = new Buffer(fs.readFileSync(__dirname+'/photo.png')).toString('base64');
+                                    //send photo to the server as a base64 data
+                                    socket.emit('photo', {uid: uid, photo: pfc});
+                                    //delete image from the drone
+                                    fs.unlinkSync(__dirname+'/photo.png');
+                                }
+                            });
                         }
                     });
                 }
@@ -163,8 +179,16 @@ socket.on('connect', function(){
                 try {
                     //run mission
                     exec("python3 /var/www/CRTClover/mission.py", (error, stdout, stderr) => {
-                        //send mission output
-                        socket.emit('missionOut', {out: stdout, error: stderr, uid: uid});
+                        if(stderr.indexOf('ModuleNotFoundError') >= 0 && stderr.indexOf('rospkg') >= 0){
+                            exec("python /var/www/CRTClover/mission.py", (error, stdout, stderr) => {
+                                //send mission output
+                                socket.emit('missionOut', {out: stdout, error: stderr, uid: uid});
+                            });
+                        }
+                        else{
+                            //send mission output
+                            socket.emit('missionOut', {out: stdout, error: stderr, uid: uid});
+                        }
                     });
                 } catch (error) {}
             });
