@@ -119,6 +119,7 @@ socket.on('connect', function(){
                 }
                 //return request
                 else if(command.command == 'rth'){
+                    let data = telemetry.data;
                     //get telemetry data
                     getTelemetry.callService(new ROSLIB.ServiceRequest({ frame_id: '' }), function(telemetry) {
                         //if drone does not have gps data
@@ -139,8 +140,8 @@ socket.on('connect', function(){
                                     navigate_global.callService(new ROSLIB.ServiceRequest({ lat: lat, lon: lon, z: 0.0, yaw: 0.0, yaw_rate: 0.0, speed: data.speed, frame_id: 'body', auto_arm: false }));
                                     let x = lat - telemetry.lat;
                                     let y = lon - telemetry.lon;
-                                    //set time for this function (calculate distance between coordinates and / it on the speed + 20 spare seconds)
-                                    setTimeout(action, (Math.sqrt(x*x+y*y)/data.speed)*1000+20000);
+                                    //set time for this function (divide distance between coordinates by speed)
+                                    setTimeout(action, ((Math.hypot(x, y)*1.113195e5)/data.speed)*1000);
                                     //hover or land after the return
                                     function action(){
                                         if(data.action == 'hover'){
@@ -163,10 +164,14 @@ socket.on('connect', function(){
                             //if user choosed 'return to takeoff coordinates'
                             else if(data.to == 'takeoff'){
                                 //get takeoff coordinates
-                                let coords = fs.readFileSync('/var/www/CRTClover/takeoff.txt', 'utf-8').split(';');
-                                let lat = coords[0];
-                                let lon = coords[1];
-                                rth(lat, lon);
+                                try {
+                                    let coords = fs.readFileSync('/var/www/CRTClover/takeoff.txt', 'utf-8').split(';');
+                                    let lat = coords[0];
+                                    let lon = coords[1];
+                                    rth(lat, lon);
+                                } catch (error) {
+                                    socket.emit('returnToTakeoffError', {uid: uid});
+                                }
                             }
                         }
                     });
