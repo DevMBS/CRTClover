@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 //import libs an framework
 //child_process - library for executing commands in terminal
 const { exec } = require("child_process");
@@ -119,7 +118,7 @@ socket.on('connect', function(){
                 }
                 //return request
                 else if(command.command == 'rth'){
-                    let data = telemetry.data;
+                    let data = command.data;
                     //get telemetry data
                     getTelemetry.callService(new ROSLIB.ServiceRequest({ frame_id: '' }), function(telemetry) {
                         //if drone does not have gps data
